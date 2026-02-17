@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/ruff-action@v3
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[dev]"
+      - run: pytest -v
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: linkarr:test
+      - name: Smoke test (one-shot mode)
+        run: |
+          mkdir -p /tmp/linkarr/{downloads/movies,downloads/series,movies,series,data}
+          docker run --rm \
+            -v /tmp/linkarr/downloads:/media/downloads \
+            -v /tmp/linkarr/movies:/media/movies \
+            -v /tmp/linkarr/series:/media/series \
+            -v /tmp/linkarr/data:/data \
+            linkarr:test once
