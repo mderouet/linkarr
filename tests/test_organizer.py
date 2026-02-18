@@ -1,6 +1,7 @@
 """Integration tests for the organizer pipeline: ledger, hardlinks, cleanup, dry-run."""
 
 import os
+from unittest.mock import patch
 
 import pytest
 
@@ -98,6 +99,14 @@ class TestHardlinks:
         src = _create_fake_video(media_dirs["dl_movies"], "test.mkv")
         dest = media_dirs["lib_movies"] / "test.mkv"
         assert organize.create_hardlink(src, dest, dry_run=True)
+        assert not dest.exists()
+
+    def test_os_error_returns_false(self, media_dirs):
+        """OSError during os.link must return False so the file isn't added to the ledger."""
+        src = _create_fake_video(media_dirs["dl_movies"], "test.mkv")
+        dest = media_dirs["lib_movies"] / "test.mkv"
+        with patch("os.link", side_effect=OSError("cross-device link")):
+            assert organize.create_hardlink(src, dest) is False
         assert not dest.exists()
 
 
@@ -215,6 +224,20 @@ class TestCleanup:
         assert stale == 1
         # File should still exist in dry-run
         assert dest.exists()
+
+    def test_unlink_error_still_removes_ledger_entry(self, media_dirs):
+        """If unlink fails (permissions, locked), the entry must still leave the ledger."""
+        src = _create_fake_video(media_dirs["dl_movies"], "test.mkv")
+        dest = media_dirs["lib_movies"] / "Test" / "test.mkv"
+        organize.create_hardlink(src, dest)
+        ledger = {str(src): str(dest)}
+
+        src.unlink()
+        with patch("pathlib.Path.unlink", side_effect=OSError("permission denied")):
+            stale = organize.cleanup_stale_entries(ledger)
+        assert stale == 1
+        assert len(ledger) == 0  # entry removed despite unlink failure
+        assert dest.exists()  # file still there (unlink failed)
 
 
 class TestUnparseableFallback:

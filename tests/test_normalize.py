@@ -3,9 +3,11 @@
 TMDb is disabled via conftest.py. Tests that need TMDb use a mock.
 """
 
+import urllib.error
 from unittest.mock import patch
 
-from organize import _word_overlap, normalize_title
+import organize
+from organize import _tmdb_search, _word_overlap, normalize_title
 
 # =============================================================================
 # _word_overlap — Jaccard similarity with hyphen/colon normalization
@@ -109,3 +111,27 @@ class TestNormalizeTitle:
         with patch("organize._tmdb_search", side_effect=mock):
             result = normalize_title("Inception", None, media_type="movie", year=2010)
         assert result == "Inception"
+
+
+# =============================================================================
+# _tmdb_search — network error handling
+# =============================================================================
+
+
+class TestTmdbSearchErrors:
+    def test_network_error_returns_none(self, monkeypatch):
+        """URLError during TMDb lookup must return (None, None), not crash."""
+        monkeypatch.setenv("TMDB_API_KEY", "fake-key")
+        organize._tmdb_cache.clear()
+        with patch("urllib.request.urlopen", side_effect=urllib.error.URLError("DNS failed")):
+            name, tmdb_id = _tmdb_search("Inception", "movie", 2010)
+        assert name is None
+        assert tmdb_id is None
+
+    def test_network_error_not_cached(self, monkeypatch):
+        """Network errors must NOT be cached — a temporary outage shouldn't poison the cache."""
+        monkeypatch.setenv("TMDB_API_KEY", "fake-key")
+        organize._tmdb_cache.clear()
+        with patch("urllib.request.urlopen", side_effect=urllib.error.URLError("timeout")):
+            _tmdb_search("Inception", "movie", 2010)
+        assert "movie:inception:2010" not in organize._tmdb_cache
