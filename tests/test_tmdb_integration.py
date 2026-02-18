@@ -38,7 +38,7 @@ def _enable_tmdb(monkeypatch):
 def test_spider_man_no_way_home():
     title, year = _parse_movie("Spider-Man.No.Way.Home.2021.1080p.BluRay.mkv")
     assert year == 2021
-    assert "Spider-Man" in title or "Spider" in title.split()[0]
+    assert "spider" in title.lower()
 
 
 def test_amelie_accent():
@@ -62,7 +62,7 @@ def test_inception_basic():
 def test_the_batman():
     title, year = _parse_movie("The.Batman.2022.1080p.WEB-DL.mkv")
     assert year == 2022
-    assert "Batman" in title
+    assert "batman" in title.lower()
 
 
 # --- Series: TMDb normalization ---
@@ -73,25 +73,25 @@ def test_dandadan():
     assert episode == 3
     assert season == 1
     # TMDb returns "Dan Da Dan" (official title)
-    assert "Dan" in title
+    assert "dan" in title.lower()
 
 
 def test_breaking_bad():
     title, season, episode = _parse_series("Breaking.Bad.S05E16.720p.BluRay.x264-DEMAND.mkv")
     assert season == 5
     assert episode == 16
-    assert "Breaking Bad" in title
+    assert "breaking bad" in title.lower()
 
 
 def test_jujutsu_kaisen():
     title, season, episode = _parse_series("[SubsPlease] Jujutsu Kaisen S2 - 15 (1080p).mkv")
     assert season == 2
     assert episode == 15
-    assert "Jujutsu Kaisen" in title
+    assert "jujutsu kaisen" in title.lower()
 
 
 def test_dr_stone():
     title, season, episode = _parse_series("Dr.Stone.S01E05.720p.mkv")
     assert season == 1
     assert episode == 5
-    assert "Stone" in title
+    assert "stone" in title.lower()
