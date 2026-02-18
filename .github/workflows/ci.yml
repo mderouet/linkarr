@@ -26,6 +26,8 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: pytest -v --cov=organize --cov-report=xml --cov-report=term-missing
         if: matrix.python-version == '3.13'
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
       - run: pytest -v
         if: matrix.python-version != '3.13'
       - uses: codecov/codecov-action@v5

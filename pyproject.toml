@@ -28,6 +28,7 @@ ignore = ["SIM108"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+markers = ["integration: tests that call the real TMDb API"]
 
 [tool.coverage.run]
 source = ["organize"]
