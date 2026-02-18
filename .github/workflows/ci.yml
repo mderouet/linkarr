@@ -24,7 +24,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -e ".[dev]"
+      - run: pytest -v --cov=organize --cov-report=xml --cov-report=term-missing
+        if: matrix.python-version == '3.13'
       - run: pytest -v
+        if: matrix.python-version != '3.13'
+      - uses: codecov/codecov-action@v5
+        if: matrix.python-version == '3.13'
+        with:
+          files: coverage.xml
 
   docker:
     runs-on: ubuntu-latest

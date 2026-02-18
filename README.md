@@ -1,5 +1,8 @@
 # Linkarr
 
+[![CI](https://github.com/mderouet/linkarr/actions/workflows/ci.yml/badge.svg)](https://github.com/mderouet/linkarr/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/mderouet/linkarr/graph/badge.svg)](https://codecov.io/gh/mderouet/linkarr)
+
 Drop torrent files in a folder. Plex picks them up with clean names. That's it.
 
 Linkarr watches your download directories, parses scene-named files, and creates clean-named hardlinks that Plex, Jellyfin, or Emby can match perfectly. Your originals stay untouched for seeding. No extra disk space used.

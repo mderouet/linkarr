@@ -13,6 +13,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
+    "pytest-cov>=6.0",
     "ruff>=0.9",
 ]
 
@@ -27,3 +28,9 @@ ignore = ["SIM108"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
+[tool.coverage.run]
+source = ["organize"]
+
+[tool.coverage.report]
+exclude_lines = ["if __name__"]
