@@ -217,6 +217,26 @@ class TestCleanup:
         assert dest.exists()
 
 
+class TestUnparseableFallback:
+    """When parsing fails, files should be hardlinked with their original name."""
+
+    def test_unparseable_movie_uses_original_name(self, media_dirs):
+        # guessit extracts no title from pure-metadata filenames like "1080p.mkv"
+        _create_fake_video(media_dirs["dl_movies"], "1080p.mkv")
+        ledger = {}
+        count = organize.process_movies(ledger)
+        assert count == 1
+        # Should land directly in library root with original name
+        assert (media_dirs["lib_movies"] / "1080p.mkv").exists()
+
+    def test_unparseable_series_uses_original_name(self, media_dirs):
+        _create_fake_video(media_dirs["dl_series"], "720p.x264.mkv")
+        ledger = {}
+        count = organize.process_series(ledger)
+        assert count == 1
+        assert (media_dirs["lib_series"] / "720p.x264.mkv").exists()
+
+
 class TestDryRun:
     def test_process_movies_dry_run(self, media_dirs, monkeypatch):
         monkeypatch.setattr(organize, "DRY_RUN", True)
