@@ -74,10 +74,10 @@ services:
     environment:
       - TMDB_API_KEY=your_tmdb_api_key
       - SCAN_INTERVAL=60
-      - DOWNLOADS_MOVIES=/media/downloads/movies
-      - DOWNLOADS_SERIES=/media/downloads/series
-      - LIBRARY_MOVIES=/media/movies
-      - LIBRARY_SERIES=/media/series
+      - DOWNLOADS_MOVIES=/media/downloads/movies  # torrent client downloads here — must differ from library
+      - DOWNLOADS_SERIES=/media/downloads/series  # torrent client downloads here — must differ from library
+      - LIBRARY_MOVIES=/media/movies              # Plex scans here — clean hardlinks are created
+      - LIBRARY_SERIES=/media/series              # Plex scans here — clean hardlinks are created
     volumes:
       - /path/to/media:/media
       - linkarr-data:/data
@@ -106,10 +106,10 @@ services:
     image: ghcr.io/mderouet/linkarr:latest
     environment:
       - TMDB_API_KEY=${TMDB_API_KEY}
-      - DOWNLOADS_MOVIES=/media/downloads/movies
-      - DOWNLOADS_SERIES=/media/downloads/series
-      - LIBRARY_MOVIES=/media/movies
-      - LIBRARY_SERIES=/media/series
+      - DOWNLOADS_MOVIES=/media/downloads/movies  # torrent client downloads here — must differ from library
+      - DOWNLOADS_SERIES=/media/downloads/series  # torrent client downloads here — must differ from library
+      - LIBRARY_MOVIES=/media/movies              # Plex scans here — clean hardlinks are created
+      - LIBRARY_SERIES=/media/series              # Plex scans here — clean hardlinks are created
     volumes:
       - /mnt/media:/media
       - linkarr-data:/data
