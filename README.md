@@ -2,7 +2,7 @@
 
 Hardlink media organizer for Plex, Jellyfin, and Emby.
 
-Scans scene-named torrent downloads, parses filenames with [guessit](https://github.com/guessit-io/guessit) + [aniparse](https://github.com/igorcmoura/aniparse), normalizes titles via [TMDb](https://www.themoviedb.org/), and creates hardlinks in a clean library structure. Zero extra disk usage. Seeding continues uninterrupted.
+Scans scene-named torrent downloads, parses filenames with [guessit](https://github.com/guessit-io/guessit) + [aniparse](https://github.com/igorcmoura/aniparse), normalizes titles via [TMDb]([https://www.themoviedb.org/](https://www.themoviedb.org/subscription)), and creates hardlinks in a clean library structure. Zero extra disk usage. Seeding continues uninterrupted.
 
 ## The problem
 
