@@ -53,19 +53,15 @@ The original file is untouched. Seeding continues. Zero extra disk space.
 
 Every hardlink points to the same data on disk — same inode, same bytes. Download 50 GB of media, your library shows 50 GB, not 100 GB.
 
-### Why hardlinks?
-
-When you download a torrent, you can't just rename the file — it breaks seeding. You can't copy it either — that doubles your disk usage. Symlinks work sometimes, but Plex and some media servers don't always follow them.
-
-Hardlinks solve this: one file on disk, two names in the filesystem. The torrent client sees the original scene name. Plex sees the clean name. Both are real files pointing to the same data.
-
-When you remove a torrent, linkarr detects the missing source and cleans up the hardlink automatically.
-
 ## Prerequisites
 
 1. **TMDb API key** (free) — linkarr uses [The Movie Database](https://www.themoviedb.org/) to normalize titles (`Amelie` -> `Amelie`, `Spiderman` -> `Spider-Man`, scene abbreviations -> official names). Get your free API key at https://www.themoviedb.org/settings/api
 
 2. **Docker** — linkarr runs as a lightweight container (~60 MB)
+
+3. **Torrent client categories** — configure your torrent client with two download directories so linkarr knows what's a movie and what's a series:
+   - `movies` category → saves to `/media/downloads/movies`
+   - `series` category → saves to `/media/downloads/series`
 
 ## Quick start
 
@@ -115,8 +111,6 @@ volumes:
 ```
 
 > **Important**: All containers must share the same `/media` mount from the host. Hardlinks only work within a single filesystem.
-
-Set up two qBittorrent categories (`movies` and `series`) pointing to `/media/downloads/movies` and `/media/downloads/series`. When you add a torrent, assign it to the right category. Linkarr does the rest.
 
 ## Configuration
 
@@ -185,6 +179,14 @@ Delete the ledger and restart:
 docker exec linkarr rm /data/processed.json
 docker restart linkarr
 ```
+
+## Why hardlinks?
+
+When you download a torrent, you can't just rename the file — it breaks seeding. You can't copy it either — that doubles your disk usage. Symlinks work sometimes, but Plex and some media servers don't always follow them.
+
+Hardlinks solve this: one file on disk, two names in the filesystem. The torrent client sees the original scene name. Plex sees the clean name. Both are real files pointing to the same data.
+
+When you remove a torrent, linkarr detects the missing source and cleans up the hardlink automatically.
 
 ## License
 
