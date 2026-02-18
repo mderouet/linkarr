@@ -74,6 +74,10 @@ services:
     environment:
       - TMDB_API_KEY=your_tmdb_api_key
       - SCAN_INTERVAL=60
+      - DOWNLOADS_MOVIES=/media/downloads/movies
+      - DOWNLOADS_SERIES=/media/downloads/series
+      - LIBRARY_MOVIES=/media/movies
+      - LIBRARY_SERIES=/media/series
     volumes:
       - /path/to/media:/media
       - linkarr-data:/data
@@ -102,6 +106,10 @@ services:
     image: ghcr.io/mderouet/linkarr:latest
     environment:
       - TMDB_API_KEY=${TMDB_API_KEY}
+      - DOWNLOADS_MOVIES=/media/downloads/movies
+      - DOWNLOADS_SERIES=/media/downloads/series
+      - LIBRARY_MOVIES=/media/movies
+      - LIBRARY_SERIES=/media/series
     volumes:
       - /mnt/media:/media
       - linkarr-data:/data
